@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+******************************************************************************
+*
+* PanicButton
+* ****************************************************************************
+* Search nearest policeman
+*
+* Copyright (C) 2013 NextGIS (http://nextgis.ru)
+*
+* This source is free software; you can redistribute it and/or modify it under
+* the terms of the GNU General Public License as published by the Free
+* Software Foundation; either version 2 of the License, or (at your option)
+* any later version.
+*
+* This code is distributed in the hope that it will be useful, but WITHOUT ANY
+* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+* details.
+*
+* A copy of the GNU General Public License is available on the World Wide Web
+* at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing
+* to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+* MA 02111-1307, USA.
+*
+******************************************************************************
+-->
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="?android:attr/listPreferredItemHeight"
+  android:padding="5dip"
+  >
+   
+  <ImageView
+      android:id="@+id/ivIcon"
+      android:layout_width="wrap_content"
+      android:layout_height="fill_parent"
+      android:layout_marginRight="5dip"
+      android:scaleType="center"/>
+   
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="0dip"
+      android:layout_height="fill_parent"
+      android:layout_weight="1">
+   
+      <TextView
+          android:id="@+id/tvInspector"
+          android:layout_width="fill_parent"
+          android:layout_height="0dip"
+          android:layout_weight="1"
+          android:gravity="center_vertical"
+          android:textAppearance="?android:attr/textAppearanceLarge"/>
+       
+      <TextView
+          android:id="@+id/tvPhone"
+          android:layout_width="fill_parent"
+          android:layout_height="0dip"
+          android:layout_weight="1"
+          android:singleLine="true"
+          android:ellipsize="marquee" />
+
+  </LinearLayout>   
+  
+  <View
+    android:layout_height="fill_parent"
+    android:layout_width="1dp"
+    android:background="@android:color/darker_gray"/>
+  
+  <ImageButton
+      android:id="@+id/phone_call"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:layout_margin="7dip"
+      android:background="@drawable/ic_device_access_call" />
+   
+</LinearLayout>
