@@ -25,20 +25,28 @@
 package com.nextgis.panicbutton;
 
 import java.io.File;
-
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	
 	protected Button imageButton;
+	
+    protected LocationManager locationManager;
+    protected CurrentLocationListener currentLocationListener;
+    
+    public static double dfLon;
+	public static double dfLat;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +55,47 @@ public class MainActivity extends Activity {
 		
 		addListenerOnButton();
 
+		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		currentLocationListener = new CurrentLocationListener();
+		
+		Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if(loc != null)
+		{
+			dfLon = loc.getLongitude();
+			dfLat = loc.getLatitude();
+		}
+		requestLocationUpdates();
 	}
+	
+	private void requestLocationUpdates(){
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, currentLocationListener);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, currentLocationListener);				 
+	}
+	
+	private void removeUpdates(){
+		locationManager.removeUpdates(currentLocationListener);
+	}
+	
+	@Override
+	protected void onResume() {
+        super.onResume();
+        
+        requestLocationUpdates();
+    }
+ 
+	@Override
+    protected void onPause() {
+        super.onPause();
+        
+        removeUpdates();
+    }
+    
+	@Override
+    protected void onStop() {
+        super.onStop();
+        
+        removeUpdates();
+    }	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,10 +146,14 @@ public class MainActivity extends Activity {
  
 	            Intent intentView = new Intent(MainActivity.this, com.nextgis.panicbutton.View.class);
 	            intentView.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+	            
+				Bundle bundle = new Bundle();
+				bundle.putDouble("lat", dfLat);
+				bundle.putDouble("lon", dfLon);
+
+				intentView.putExtras(bundle);
+	            
 	            MainActivity.this.startActivity(intentView);
-				//Toast.makeText(MainActivity.this,
-				//	"ImageButton (selector) is clicked!",
-				//	Toast.LENGTH_SHORT).show(); 
 			}
  
 		});
@@ -116,4 +168,34 @@ public class MainActivity extends Activity {
         }
 	}
 
+    
+	private final class CurrentLocationListener implements LocationListener {
+		public CurrentLocationListener() {
+			super();
+		}
+
+		public void onLocationChanged(Location location) {
+			MainActivity.dfLat = location.getLatitude();
+			MainActivity.dfLon = location.getLongitude();			
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+	
 }

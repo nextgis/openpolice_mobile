@@ -7,5 +7,6 @@
     <string name="action_view">Search results</string>
     <string name="sHomepage">http://nextgis.ru</string>
     <string name="sAbout">The application for quick search the nearest policeman.\n\nDevelopers:\n  Dmitriy Bryshnikov\n  Maxim Dubinin\n\nMore info at</string>
+    <string name="strPolice">Police</string>
     
 </resources>

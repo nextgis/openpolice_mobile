@@ -25,24 +25,25 @@
 
 package com.nextgis.panicbutton;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import com.nextgis.panicbutton.PolicemanListAdapter.PolicemanItem;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-
+import android.widget.ListView;
 //import com.nextgis.panicbutton.R;
 
 public class View extends Activity {
 	
-    protected LocationManager locationManager;
-    protected CurrentLocationListener currentLocationListener;
+	protected double dfLat, dfLon;
+    private ListView mListPolicemanInfo;
+    private ArrayList <PolicemanItem> mPolicemanList = new ArrayList<PolicemanItem>();
+    protected PolicemanListAdapter mListAdapter;
 
     @SuppressLint("NewApi")
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,12 +55,23 @@ public class View extends Activity {
         	getActionBar().setHomeButtonEnabled(true);
         }
 	    getActionBar().setDisplayHomeAsUpEnabled(true);
+
+	    Bundle extras = getIntent().getExtras(); 
+	    if(extras != null) {
+	    	dfLat = extras.getDouble("lat");
+	    	dfLon = extras.getDouble("lon");
+	    }
 	    
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-		currentLocationListener = new CurrentLocationListener();
-		locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, currentLocationListener, null);
-		locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, currentLocationListener, null);		
-	}
+	    // load list
+	    mListPolicemanInfo = (ListView)findViewById(R.id.Mainlist);
+        // create new adapter
+	    mListAdapter = new PolicemanListAdapter(this, mPolicemanList);
+        // set adapter to list view
+	    mListPolicemanInfo.setAdapter(mListAdapter);	
+	    
+	    mPolicemanList.add(new PolicemanItem((String) getResources().getText(R.string.strPolice), "112", "police.png"));
+		mListAdapter.notifyDataSetChanged();	    
+    }
 	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -74,34 +86,5 @@ public class View extends Activity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    
-	private final class CurrentLocationListener implements LocationListener {
-		public CurrentLocationListener() {
-			super();
-		}
-
-		public void onLocationChanged(Location location) {
-			locationManager.removeUpdates(this);
-			//add 
-		}
-
-		@Override
-		public void onProviderDisabled(String provider) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onProviderEnabled(String provider) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-			// TODO Auto-generated method stub
-			
-		}
-	}
 
 }
