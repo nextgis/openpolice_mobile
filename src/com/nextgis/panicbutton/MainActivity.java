@@ -25,13 +25,21 @@
 package com.nextgis.panicbutton;
 
 import java.io.File;
+
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -113,16 +121,6 @@ public class MainActivity extends Activity {
 	            intentMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	            startActivity(intentMain);
 	            return true;
-	        case R.id.action_settings:
-	            //Intent intentView = new Intent(this, com.nextgis.panicbutton.View.class);
-	            //intentView.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-	            //startActivity(intentView);
-	        	
-	            // app icon in action bar clicked; go home
-	            //Intent intentSet = new Intent(this, SettingsMain.class);
-	            //intentSet.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-	            //startActivity(intentSet);
-	            return true;
 	        case R.id.action_about:
 	            // app icon in action bar clicked; go home
 	            Intent intentAbout = new Intent(this, com.nextgis.panicbutton.About.class);
@@ -157,15 +155,58 @@ public class MainActivity extends Activity {
 			}
  
 		});
- 		
-		try {
-			File spatialDbFile = new File(getExternalFilesDir(null), "oppo.sqlite");
-			jsqlite.Database db = new jsqlite.Database();
-            db.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE);
-        } catch (Exception e) {
-            e.printStackTrace();
-            //imageButton.setEnabled(false);
-        }
+		
+    	final File spatialDbFile = new File(getExternalFilesDir(null), "oppo3.sqlite");
+    	if(!spatialDbFile.exists())
+    	{
+    		imageButton.setEnabled(false);
+    		
+    		BroadcastReceiver onComplete = new BroadcastReceiver() {
+    		    public void onReceive(Context ctxt, Intent intent) {
+    		    	if(spatialDbFile.exists())
+    		    		imageButton.setEnabled(true);
+    		    }
+    		};
+    		registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    		
+    		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+    		    @Override
+    		    public void onClick(DialogInterface dialog, int which) {
+    		        switch (which){
+    		        case DialogInterface.BUTTON_POSITIVE:
+    		        	
+    		        	String url = "http://gis-lab.info/data/zp-gis/data/oppo3.sqlite";
+    		        	DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+   		        	
+    		        	request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+    		        	request.setAllowedOverRoaming(false);
+    		        	request.setTitle(getResources().getText(R.string.stDnldTitle));
+    		        	request.setDescription(getResources().getText(R.string.stDnldDecription));
+    		        	
+    		        	// in order for this if to run, you must use the android 3.2 to compile your app
+    		        	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+    		        	    request.allowScanningByMediaScanner();
+    		        	    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+    		        	}
+    		        	request.setDestinationInExternalFilesDir(getApplicationContext(), null, "oppo3.sqlite");
+
+    		        	// get download service and enqueue file
+    		        	DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+    		        	manager.enqueue(request);
+    		        	
+    		            break;
+
+    		        case DialogInterface.BUTTON_NEGATIVE:
+    		            //No button clicked
+    		            break;
+    		        }
+    		    }
+    		};
+
+    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setMessage(R.string.stDownloadConfirm).setPositiveButton(R.string.stYes, dialogClickListener)
+    		    .setNegativeButton(R.string.stNo, dialogClickListener).show();    		
+    	}
 	}
 
     

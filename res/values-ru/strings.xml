@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Panic Button</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_about">О программе</string>
+    <string name="action_view">Результаты поиска</string>
+    <string name="sHomepage">http://nextgis.ru</string>
+    <string name="sAbout">Приложение для быстрого поиска ближайших участковых инспекторов полиции.\n\nРазработчики:\n  Дмитрий Барышников\n  Маким Дубинин\n\nДетали см. по ссылке</string>
+    <string name="strPolice">Полиция</string>
+	
+	<string name="stSearching">Поиск...</string>    
+	<string name="stDownloadConfirm">База данных участковых инспекторов отсутвует. Загрузить?</string>    
+	<string name="stYes">Да</string>    
+	<string name="stNo">Нет</string>
+	<string name="stDnldTitle">Загрузка...</string>    
+	<string name="stDnldDecription">Загрузка базы данных участковых инспекторов</string>    
+</resources>
