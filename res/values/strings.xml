@@ -6,11 +6,11 @@
     <string name="action_about">About</string>
     <string name="action_view">Search results</string>
     <string name="sHomepage">http://nextgis.ru</string>
-    <string name="sAbout">The application for quick search the nearest policeman.\n\nDevelopers:\n  Dmitriy Bryshnikov\n  Maxim Dubinin\n\nMore info at</string>
+    <string name="sAbout">The application for quick search the nearest policeman.\n\nDevelopers:\n  Dmitriy Baryshnikov\n  Maxim Dubinin\n\nMore info at</string>
     <string name="strPolice">Police</string>
 	
 	<string name="stSearching">Searching...</string>    
-	<string name="stDownloadConfirm">The policeman database is apsent, download?</string>    
+	<string name="stDownloadConfirm">The policeman database is absent. Download?</string>    
 	<string name="stYes">Yes</string>    
 	<string name="stNo">No</string>
 	<string name="stDnldTitle">Downloading...</string>    

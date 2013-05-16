@@ -39,6 +39,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,6 +47,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class View extends Activity {
 	
@@ -73,6 +75,11 @@ public class View extends Activity {
 	    	dfLat = extras.getDouble("lat");
 	    	dfLon = extras.getDouble("lon");
 	    }
+	    else
+	    {
+	    	dfLat = 0;
+	    	dfLon = 0;	    
+	    }
 	    
 	    // load list
 	    mListPolicemanInfo = (ListView)findViewById(R.id.Mainlist);
@@ -82,13 +89,14 @@ public class View extends Activity {
 	    mListPolicemanInfo.setAdapter(mListAdapter);		
 	    
         mFillDataHandler = new Handler() {
-            public void handleMessage(Message msg) {
-            	Bundle resultData = msg.getData();
+            public void handleMessage(Message msg) {        	    
+
+        	    Bundle resultData = msg.getData();
             	
             	String sName = resultData.getString("name");
             	String sPhone = resultData.getString("phone");
             	String sPic = resultData.getString("pic");
-            	if(sPhone == null){
+             	if(sPhone == null){
             		mPolicemanList.add(new PolicemanItem((String) getResources().getText(R.string.strPolice), "112", "police.png"));
             	}
             	else {
@@ -159,63 +167,74 @@ public class View extends Activity {
 	        
 		    //Queue nearby policemen
 	    	File spatialDbFile = new File(getExternalFilesDir(null), "oppo3.sqlite");
-	    	SQLiteDatabase policeDB = SQLiteDatabase.openDatabase(spatialDbFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
-	    	if(policeDB != null)
-	    	{
-	            double dfCoeff = Math.cos(dfLat * Math.PI / 180);
-	            double dfDist = 1000;
-	            double dfR = 6378137;
-	            //
-	            double dfDeltaLat = dfDist * 180 / (dfR * Math.PI);
-	            double dfDeltaLon = dfDeltaLat * dfCoeff;
-	            Log.d("PanicButton", "delta lat:" + dfDeltaLat + "delta lat:" + dfDeltaLon);
-	            double dfXmin = dfLon - dfDeltaLon;
-	            double dfXmax = dfLon + dfDeltaLon; 
-	            double dfYmin = dfLat - dfDeltaLat;
-	            double dfYmax = dfLat + dfDeltaLat;
-	            Log.d("PanicButton", "lat:" + dfLat + " lon:" + dfLon);
-	            String sSQL = "SELECT qqq_NAME, qqq_RANK, qqq_PHONE from all2 WHERE lon <= " + dfXmax + " AND lon >= " + dfXmin + " AND lat <= " + dfYmax + " AND lat >= " + dfYmin;
-	    		Log.d("PanicButton", sSQL);
-	    		Cursor cursor = policeDB.rawQuery(sSQL, null);
-	    		Log.d("PanicButton", "db open success " + cursor.getCount());
-	    		if(cursor.getCount() > 0)
-	    		{
-		    		cursor.moveToFirst();
-		    		do
+	    	try{
+	    		SQLiteDatabase policeDB = SQLiteDatabase.openDatabase(spatialDbFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
+		    	if(policeDB != null && policeDB.isOpen())
+		    	{
+		            double dfCoeff = Math.cos(dfLat * Math.PI / 180);
+		            double dfDist = 1000;
+		            double dfR = 6378137;
+		            //
+		            double dfDeltaLat = dfDist * 180 / (dfR * Math.PI);
+		            double dfDeltaLon = dfDeltaLat * dfCoeff;
+		            Log.d("PanicButton", "delta lat:" + dfDeltaLat + "delta lat:" + dfDeltaLon);
+		            double dfXmin = dfLon - dfDeltaLon;
+		            double dfXmax = dfLon + dfDeltaLon; 
+		            double dfYmin = dfLat - dfDeltaLat;
+		            double dfYmax = dfLat + dfDeltaLat;
+		            Log.d("PanicButton", "lat:" + dfLat + " lon:" + dfLon);
+		            String sSQL = "SELECT qqq_NAME, qqq_RANK, qqq_PHONE from all2 WHERE lon <= " + dfXmax + " AND lon >= " + dfXmin + " AND lat <= " + dfYmax + " AND lat >= " + dfYmin;
+		            //String sSQL = "SELECT NAME, RANK, PHONE from all2 WHERE lon <= " + dfXmax + " AND lon >= " + dfXmin + " AND lat <= " + dfYmax + " AND lat >= " + dfYmin;
+		    		Log.d("PanicButton", sSQL);        	    
+	
+		    		Cursor cursor = policeDB.rawQuery(sSQL, null);
+		    		Log.d("PanicButton", "db open success " + cursor.getCount());
+		    		if(cursor.getCount() > 0)
 		    		{
-		                String sName = cursor.getString(0);
-		                String sRank = cursor.getString(1);
-		                String sPhone = cursor.getString(2);
-		                
-		                //if(dfCurrentDist > dfDist)
-		                //	continue;
-		                	
-		                if(!list.contains(sPhone)){
-		                	list.add(sPhone);
-		                	
-		                	Bundle bundle = new Bundle();
-		                    bundle.putString("name", sRank + " " + sName);
-		                    bundle.putString("phone", sPhone);
-		                    bundle.putString("pic", "police.png");
-		                    
-		                    Message msg = new Message();
-		                    msg.setData(bundle);
-		                    
-		                    if(mEventReceiver != null){
-		                    	mEventReceiver.sendMessage(msg);
-		                    }
-		                }
-		    			
-		    		}while(cursor.moveToNext());
+			    		cursor.moveToFirst();
+			    		do
+			    		{
+			                String sName = cursor.getString(0);
+			                String sRank = cursor.getString(1);
+			                String sPhone = cursor.getString(2);
+			                
+			                //if(dfCurrentDist > dfDist)
+			                //	continue;
+			                	
+			                if(!list.contains(sPhone)){
+			                	list.add(sPhone);
+			                	
+			                	Bundle bundle = new Bundle();
+			                    bundle.putString("name", sRank + " " + sName);
+			                    bundle.putString("phone", sPhone);
+			                    bundle.putString("pic", "police.png");
+			                    
+			                    Message msg = new Message();
+			                    msg.setData(bundle);
+			                    
+			                    if(mEventReceiver != null){
+			                    	mEventReceiver.sendMessage(msg);
+			                    }
+			                }
+			    			
+			    		}while(cursor.moveToNext());
+			    	}
+		    		policeDB.close();
+		    	}
+		    	else {
+		    		Log.d("PanicButton", spatialDbFile.getPath() + "open failed");
 		    	}
 	    	}
-
-			mbFilled = true;
+	    	catch(SQLiteException e){
+	    		Log.d("PanicButton", e.getLocalizedMessage());
+	    	}
 
 			Message msg = new Message();
             if(mEventReceiver != null){
             	mEventReceiver.sendMessage(msg);
             }
+            
+			mbFilled = true;
 			
 	        return null;
 	    }
@@ -229,6 +248,7 @@ public class View extends Activity {
 	    public void DismissDowloadDialog(){
 			if(mDownloadDialog != null){
 				mDownloadDialog.dismiss();
+				mDownloadDialog = null;
 			}	
 		}
 		

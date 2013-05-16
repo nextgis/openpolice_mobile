@@ -6,11 +6,11 @@
     <string name="action_about">О программе</string>
     <string name="action_view">Результаты поиска</string>
     <string name="sHomepage">http://nextgis.ru</string>
-    <string name="sAbout">Приложение для быстрого поиска ближайших участковых инспекторов полиции.\n\nРазработчики:\n  Дмитрий Барышников\n  Маким Дубинин\n\nДетали см. по ссылке</string>
+    <string name="sAbout">Приложение для быстрого поиска ближайших участковых инспекторов полиции.\n\nРазработчики:\n  Дмитрий Барышников\n  Максим Дубинин\n\nДетали см. по ссылке</string>
     <string name="strPolice">Полиция</string>
 	
 	<string name="stSearching">Поиск...</string>    
-	<string name="stDownloadConfirm">База данных участковых инспекторов отсутвует. Загрузить?</string>    
+	<string name="stDownloadConfirm">База данных участковых инспекторов отсутствует. Загрузить?</string>    
 	<string name="stYes">Да</string>    
 	<string name="stNo">Нет</string>
 	<string name="stDnldTitle">Загрузка...</string>    

@@ -72,6 +72,11 @@ public class MainActivity extends Activity {
 			dfLon = loc.getLongitude();
 			dfLat = loc.getLatitude();
 		}
+		else
+		{
+			dfLon = 0;
+			dfLat = 0;
+		}
 		requestLocationUpdates();
 	}
 	
