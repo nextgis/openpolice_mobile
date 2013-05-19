@@ -90,6 +90,7 @@ public class PolicemanListAdapter extends BaseAdapter {
 		// set data to display
 		File path = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 	    File imgFile = new File(path, entry.GetImage());		
+		Log.d("PanicButton", imgFile.getPath());
 		if(imgFile.exists()){
 
 		    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());

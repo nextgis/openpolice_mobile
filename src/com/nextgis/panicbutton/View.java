@@ -47,7 +47,6 @@ import android.os.Message;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class View extends Activity {
 	
@@ -183,12 +182,22 @@ public class View extends Activity {
 		            double dfYmin = dfLat - dfDeltaLat;
 		            double dfYmax = dfLat + dfDeltaLat;
 		            Log.d("PanicButton", "lat:" + dfLat + " lon:" + dfLon);
-		            String sSQL = "SELECT qqq_NAME, qqq_RANK, qqq_PHONE from all2 WHERE lon <= " + dfXmax + " AND lon >= " + dfXmin + " AND lat <= " + dfYmax + " AND lat >= " + dfYmin;
+		            String sSQL = "SELECT qqq_NAME, qqq_RANK, qqq_PHONE, id from all2 WHERE lon <= " + dfXmax + " AND lon >= " + dfXmin + " AND lat <= " + dfYmax + " AND lat >= " + dfYmin;
 		            //String sSQL = "SELECT NAME, RANK, PHONE from all2 WHERE lon <= " + dfXmax + " AND lon >= " + dfXmin + " AND lat <= " + dfYmax + " AND lat >= " + dfYmin;
 		    		Log.d("PanicButton", sSQL);        	    
 	
 		    		Cursor cursor = policeDB.rawQuery(sSQL, null);
 		    		Log.d("PanicButton", "db open success " + cursor.getCount());
+		    		
+	            	Bundle bundle = new Bundle();
+	                bundle.putString("phone", "db open success " + cursor.getCount());
+	                Message msg = new Message();
+	                msg.setData(bundle);
+	                
+	                if(mEventReceiver != null){
+	                	mEventReceiver.sendMessage(msg);
+	                }
+		    		
 		    		if(cursor.getCount() > 0)
 		    		{
 			    		cursor.moveToFirst();
@@ -197,6 +206,7 @@ public class View extends Activity {
 			                String sName = cursor.getString(0);
 			                String sRank = cursor.getString(1);
 			                String sPhone = cursor.getString(2);
+			                String sPic = cursor.getString(3) + ".jpg";
 			                
 			                //if(dfCurrentDist > dfDist)
 			                //	continue;
@@ -204,16 +214,16 @@ public class View extends Activity {
 			                if(!list.contains(sPhone)){
 			                	list.add(sPhone);
 			                	
-			                	Bundle bundle = new Bundle();
-			                    bundle.putString("name", sRank + " " + sName);
-			                    bundle.putString("phone", sPhone);
-			                    bundle.putString("pic", "police.png");
+			                	Bundle bundle1 = new Bundle();
+			                    bundle1.putString("name", sRank + " " + sName);
+			                    bundle1.putString("phone", sPhone);
+			                    bundle1.putString("pic", sPic);
 			                    
-			                    Message msg = new Message();
-			                    msg.setData(bundle);
+			                    Message msg1 = new Message();
+			                    msg1.setData(bundle1);
 			                    
 			                    if(mEventReceiver != null){
-			                    	mEventReceiver.sendMessage(msg);
+			                    	mEventReceiver.sendMessage(msg1);
 			                    }
 			                }
 			    			
