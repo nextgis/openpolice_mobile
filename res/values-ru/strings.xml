@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Panic Button</string>
+    <string name="app_name">Найти участкового</string>
     <string name="action_settings">Настройки</string>
     <string name="action_about">О программе</string>
     <string name="action_view">Результаты поиска</string>
     <string name="sHomepage">http://nextgis.ru</string>
+    <string name="sDetailpage">http://gis-lab.info/qa/openpolice.html</string>
     <string name="sAbout">Приложение для быстрого поиска ближайших участковых инспекторов полиции.\n\nРазработчики:\n  Дмитрий Барышников\n  Максим Дубинин\n\nДетали см. по ссылке</string>
     <string name="strPolice">Полиция</string>
 	
-	<string name="stSearching">Поиск...</string>    
-	<string name="stDownloadConfirm">База данных участковых инспекторов отсутствует. Загрузить?</string>    
+	<string name="stSearching">Поиск&#8230;</string>    
+	<string name="stFilling">Заполнение базы данных</string>    
+	<string name="stDownloadConfirm">База данных участковых отсутствует. Без базы поиск инспекторов невозможен. Загрузить?</string>    
 	<string name="stYes">Да</string>    
 	<string name="stNo">Нет</string>
-	<string name="stDnldTitle">Загрузка...</string>    
-	<string name="stDnldDecription">Загрузка базы данных участковых инспекторов</string>    
+	<string name="stDnldTitle">Загрузка&#8230;</string>    
+	<string name="stDnldDecription">Загрузка базы данных участковых</string>    
+	<string name="stZipExtractionProcess">Подождите&#8230; Идет распаковка архива&#8230;</string>
+	
+	<string name="strSearchPolicemanBtn">Найти участкового инспектора</string>    
+	<string name="strDownloadDBPolicemanBtn">Обновить базу участковых</string>    
+	<string name="strDownloadDBPhotoBtn">Загрузить фото участковых</string>    
+	
+	<string name="stClosestAddress">Ближайший к вам адрес:</string> 
+	<string name="stLocFixError">Местоположение не определено!</string>    		
 </resources>

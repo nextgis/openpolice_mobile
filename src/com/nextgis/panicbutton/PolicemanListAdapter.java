@@ -126,10 +126,14 @@ public class PolicemanListAdapter extends BaseAdapter {
 		private String sInspector;
 		private String sPhone;
 		private String sImage;
-		public PolicemanItem(String sInspector, String sPhone, String sImage) {
+		private String sAddres;
+		private double dfDist;
+		public PolicemanItem(String sInspector, String sPhone, String sImage, double dfDist, String sAddres) {
 			this.sInspector = sInspector;
 			this.sPhone = sPhone;
 			this.sImage = sImage;
+			this.dfDist = dfDist;
+			this.SetAddres(sAddres);
 		}		
 		
 		public String GetInspector(){
@@ -170,6 +174,22 @@ public class PolicemanListAdapter extends BaseAdapter {
 			sInspector = in.readString();
 			sPhone = in.readString();
 			sImage = in.readString();
+		}
+
+		public double GetDistance() {
+			return dfDist;
+		}
+
+		public void SetDistance(double dfDist) {
+			this.dfDist = dfDist;
+		}
+
+		public String GetAddres() {
+			return sAddres;
+		}
+
+		public void SetAddres(String sAddres) {
+			this.sAddres = sAddres;
 		}
 	}
 }

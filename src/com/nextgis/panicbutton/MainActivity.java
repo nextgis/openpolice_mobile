@@ -29,26 +29,28 @@ import java.io.File;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
+	public static final String TAG = "PanicButton";
 	
-	protected Button imageButton;
+	protected Button searchButton;
 	
     protected LocationManager locationManager;
     protected CurrentLocationListener currentLocationListener;
@@ -56,12 +58,16 @@ public class MainActivity extends Activity {
     public static double dfLon;
 	public static double dfLat;
 
+	private Handler m_DBFillHandler; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
 		addListenerOnButton();
+		addListenerOnDownloadDBButton();
+		addListenerOnDownloadPhotoButton();
 
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		currentLocationListener = new CurrentLocationListener();
@@ -138,14 +144,90 @@ public class MainActivity extends Activity {
 		
 	}
 	
+	public void addListenerOnDownloadDBButton(){
+
+		Button downloadDBButton =  (Button) findViewById(R.id.downloadDBBtn);
+		
+		downloadDBButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				GetPoliceDB();
+			} 
+		});	
+	}
+	
+	public void GetPoliceDB(){
+		PolicemanDatabaseHelper dbHelper = new PolicemanDatabaseHelper(this);
+		SQLiteDatabase PolicemanDB = dbHelper.getWritableDatabase(); 
+		File dbFile = new File(PolicemanDB.getPath());
+		if(dbFile.exists())
+			dbFile.delete();
+		
+		String sDBPath = dbFile.getParent();
+		DownloadAndUnzipAsync download = new DownloadAndUnzipAsync(MainActivity.this, sDBPath, getResources().getString(R.string.stDnldTitle), m_DBFillHandler);
+		download.execute("http://gis-lab.info/data/zp-gis/data/policeman.zip");
+	}
+	
+	public void addListenerOnDownloadPhotoButton(){
+		Button downloadPhotoDBButton =  (Button) findViewById(R.id.downloadPhotoBtn);
+		
+		downloadPhotoDBButton.setOnClickListener(new OnClickListener() {
+			 
+			public void onClick(View arg0) {
+				File photoDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+				photoDir.delete();
+				photoDir.mkdirs();
+				DownloadAndUnzipAsync download = new DownloadAndUnzipAsync(MainActivity.this, getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath(), getResources().getString(R.string.stDnldTitle), null);
+				download.execute("http://gis-lab.info/data/zp-gis/data/photos.zip");
+			} 
+		});	
+	}
+	
+	public boolean CheckDBExist(){
+		PolicemanDatabaseHelper dbHelper = new PolicemanDatabaseHelper(this);
+		SQLiteDatabase PolicemanDB = dbHelper.getWritableDatabase(); 
+		boolean bExist = false;
+		if(PolicemanDB != null){
+			Cursor cursor = PolicemanDB.query(PolicemanDatabaseHelper.TABLE, null, null, null, null, null, null);
+			if(cursor != null){
+				if(cursor.getCount() > 0)
+					bExist = true;
+			}
+		}
+		return bExist;
+	}
 	
 	public void addListenerOnButton() {
+		
+		m_DBFillHandler = new Handler() {
+            public void handleMessage(Message msg) {
+            	super.handleMessage(msg);
+            	
+            	Bundle resultData = msg.getData();
+            	boolean bHaveErr = resultData.getBoolean("error");
+            	if(bHaveErr){
+            		Toast.makeText(MainActivity.this, resultData.getString("err_msq"), Toast.LENGTH_LONG).show();
+            	}
+            	else{
+            		if(CheckDBExist())
+            		{
+            			searchButton.setEnabled(true);
+            		}
+            	}
+            }
+        };
 		 
-		imageButton = (Button) findViewById(R.id.sosButton);
+		searchButton = (Button) findViewById(R.id.searchBtn);
  
-		imageButton.setOnClickListener(new OnClickListener() {
+		searchButton.setOnClickListener(new OnClickListener() {
  
 			public void onClick(View arg0) {
+				
+				if(dfLon == 0 && dfLat == 0){
+					Toast.makeText(MainActivity.this, getResources().getString(R.string.stLocFixError), Toast.LENGTH_LONG).show();
+					return;
+				}
  
 	            Intent intentView = new Intent(MainActivity.this, com.nextgis.panicbutton.View.class);
 	            intentView.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -161,48 +243,20 @@ public class MainActivity extends Activity {
  
 		});
 		
-    	final File spatialDbFile = new File(getExternalFilesDir(null), "oppo3.sqlite");
-    	if(!spatialDbFile.exists())
+		boolean bActivated = CheckDBExist();
+    	if(!bActivated)
     	{
-    		imageButton.setEnabled(false);
-    		
-    		BroadcastReceiver onComplete = new BroadcastReceiver() {
-    		    public void onReceive(Context ctxt, Intent intent) {
-    		    	if(spatialDbFile.exists())
-    		    		imageButton.setEnabled(true);
-    		    }
-    		};
-    		registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    		searchButton.setEnabled(false);
     		
     		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
     		    @Override
     		    public void onClick(DialogInterface dialog, int which) {
     		        switch (which){
     		        case DialogInterface.BUTTON_POSITIVE:
-    		        	
-    		        	String url = "http://gis-lab.info/data/zp-gis/data/oppo3.sqlite";
-    		        	DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-   		        	
-    		        	request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-    		        	request.setAllowedOverRoaming(false);
-    		        	request.setTitle(getResources().getText(R.string.stDnldTitle));
-    		        	request.setDescription(getResources().getText(R.string.stDnldDecription));
-    		        	
-    		        	// in order for this if to run, you must use the android 3.2 to compile your app
-    		        	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-    		        	    request.allowScanningByMediaScanner();
-    		        	    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-    		        	}
-    		        	request.setDestinationInExternalFilesDir(getApplicationContext(), null, "oppo3.sqlite");
-
-    		        	// get download service and enqueue file
-    		        	DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-    		        	manager.enqueue(request);
-    		        	
+    		        	GetPoliceDB();    		        	
     		            break;
 
     		        case DialogInterface.BUTTON_NEGATIVE:
-    		            //No button clicked
     		            break;
     		        }
     		    }
@@ -239,9 +293,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onStatusChanged(String provider, int status, Bundle extras) {
-			// TODO Auto-generated method stub
-			
+			// TODO Auto-generated method stub	
 		}
 	}
-	
 }

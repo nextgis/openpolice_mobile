@@ -6,13 +6,24 @@
     <string name="action_about">About</string>
     <string name="action_view">Search results</string>
     <string name="sHomepage">http://nextgis.ru</string>
+    <string name="sDetailpage">http://gis-lab.info/qa/openpolice.html</string>
     <string name="sAbout">The application for quick search the nearest policeman.\n\nDevelopers:\n  Dmitriy Baryshnikov\n  Maxim Dubinin\n\nMore info at</string>
     <string name="strPolice">Police</string>
 	
-	<string name="stSearching">Searching...</string>    
-	<string name="stDownloadConfirm">The policeman database is absent. Download?</string>    
+	<string name="stSearching">Searching&#8230;</string>    
+	<string name="stFilling">Fill database with data</string>    
+		<string name="stDownloadConfirm">The policeman database is absent. Without database policeman searching is disabled. Download?</string>    
 	<string name="stYes">Yes</string>    
 	<string name="stNo">No</string>
-	<string name="stDnldTitle">Downloading...</string>    
-	<string name="stDnldDecription">Downloading policeman database</string>    
+	<string name="stDnldTitle">Downloading&#8230;</string>    
+	<string name="stDnldDecription">Downloading policeman database</string> 
+	<string name="stZipExtractionProcess">Please Wait&#8230; Extracting zip file&#8230;</string>
+	
+	<string name="strSearchPolicemanBtn">Search policeman</string>    
+	<string name="strDownloadDBPolicemanBtn">Update policeman DB</string>    
+	<string name="strDownloadDBPhotoBtn">Download policeman photo DB</string>
+	    
+	<string name="stClosestAddress">The closest address to you:</string>    
+	<string name="stLocFixError">No location fix!</string>    
+					
 </resources>

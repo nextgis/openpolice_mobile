@@ -52,7 +52,7 @@
         android:autoLink="web"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sHomepage"/>
+        android:text="@string/sDetailpage"/>
     <ImageView
         android:id="@+id/imgLogo"
         android:src = "@drawable/nextgis"
@@ -60,4 +60,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
+    <TextView
+        android:id="@+id/txtLinks"
+        android:autoLink="web"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sHomepage"
+        android:layout_gravity="center"
+        android:gravity="center"/>
 </LinearLayout>
