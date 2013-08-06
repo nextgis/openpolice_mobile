@@ -51,6 +51,7 @@ public class MainActivity extends Activity {
 	public static final String TAG = "PanicButton";
 	
 	protected Button searchButton;
+	protected Button demoButton;
 	
     protected LocationManager locationManager;
     protected CurrentLocationListener currentLocationListener;
@@ -64,8 +65,28 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		m_DBFillHandler = new Handler() {
+            public void handleMessage(Message msg) {
+            	super.handleMessage(msg);
+            	
+            	Bundle resultData = msg.getData();
+            	boolean bHaveErr = resultData.getBoolean("error");
+            	if(bHaveErr){
+            		Toast.makeText(MainActivity.this, resultData.getString("err_msq"), Toast.LENGTH_LONG).show();
+            	}
+            	else{
+            		if(CheckDBExist())
+            		{
+            			searchButton.setEnabled(true);
+            			demoButton.setEnabled(true);
+            		}
+            	}
+            }
+        };		
 		
 		addListenerOnButton();
+		addListenerOnDemoButton();
 		addListenerOnDownloadDBButton();
 		addListenerOnDownloadPhotoButton();
 
@@ -199,24 +220,6 @@ public class MainActivity extends Activity {
 	}
 	
 	public void addListenerOnButton() {
-		
-		m_DBFillHandler = new Handler() {
-            public void handleMessage(Message msg) {
-            	super.handleMessage(msg);
-            	
-            	Bundle resultData = msg.getData();
-            	boolean bHaveErr = resultData.getBoolean("error");
-            	if(bHaveErr){
-            		Toast.makeText(MainActivity.this, resultData.getString("err_msq"), Toast.LENGTH_LONG).show();
-            	}
-            	else{
-            		if(CheckDBExist())
-            		{
-            			searchButton.setEnabled(true);
-            		}
-            	}
-            }
-        };
 		 
 		searchButton = (Button) findViewById(R.id.searchBtn);
  
@@ -268,7 +271,36 @@ public class MainActivity extends Activity {
     	}
 	}
 
-    
+	public void addListenerOnDemoButton() {
+		
+        demoButton = (Button) findViewById(R.id.demoBtn);
+ 
+        demoButton.setOnClickListener(new OnClickListener() {
+ 
+			public void onClick(View arg0) {
+				
+	            Intent intentView = new Intent(MainActivity.this, com.nextgis.panicbutton.View.class);
+	            intentView.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+	            
+				Bundle bundle = new Bundle();
+				bundle.putDouble("lat", 55.753559);
+				bundle.putDouble("lon", 37.609218);
+
+				intentView.putExtras(bundle);
+	            
+	            MainActivity.this.startActivity(intentView);
+			}
+ 
+		});
+		
+		boolean bActivated = CheckDBExist();
+    	if(!bActivated)
+    	{
+    		demoButton.setEnabled(false);
+       	}
+	}
+
+	
 	private final class CurrentLocationListener implements LocationListener {
 		public CurrentLocationListener() {
 			super();

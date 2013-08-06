@@ -27,8 +27,8 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -36,47 +36,54 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
+    
+    <ScrollView
+        android:layout_height="fill_parent"
+    	android:layout_width="wrap_content">
+
+   <LinearLayout 
+   		android:layout_height="fill_parent"
+    	android:layout_width="fill_parent" 
+    	android:orientation="vertical">
 
     <Button
         android:id="@+id/searchBtn"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+	    android:layout_height="100dip"
         android:layout_gravity="center"
         android:layout_margin="25dp"
-        android:layout_weight="1"
         android:drawableLeft="@drawable/ic_action_search"
-        android:gravity="left|center_vertical"
         android:text="@string/strSearchPolicemanBtn"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/searchBtn"
-        android:layout_weight="0"
-        android:orientation="vertical" >
+    <Button
+        android:id="@+id/demoBtn"
+        android:layout_width="fill_parent"
+	    android:layout_height="60dip"
+        android:layout_gravity="center"
+        android:layout_margin="25dp"
+        android:drawableLeft="@drawable/ic_action_search"
+        android:text="@string/strDemoBtn"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+       <Button
+           android:id="@+id/downloadDBBtn"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+	       android:layout_gravity="center"
+           android:layout_margin="25dp"
+           android:drawableLeft="@drawable/ic_av_download"
+           android:text="@string/strDownloadDBPolicemanBtn" />
 
-        <Button
-            android:id="@+id/downloadDBBtn"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_margin="25dp"
-            android:drawableLeft="@drawable/ic_av_download"
-            android:gravity="left|center_vertical"
-            android:text="@string/strDownloadDBPolicemanBtn" />
+       <Button
+           android:id="@+id/downloadPhotoBtn"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+		   android:layout_margin="25dp"
+           android:drawableLeft="@drawable/ic_social_person"
+           android:text="@string/strDownloadDBPhotoBtn" />
 
-        <Button
-            android:id="@+id/downloadPhotoBtn"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_margin="25dp"
-            android:drawableLeft="@drawable/ic_social_person"
-            android:gravity="left|center_vertical"
-            android:text="@string/strDownloadDBPhotoBtn" />
-
-    </LinearLayout>
-
+       </LinearLayout>
+       </ScrollView>
 </LinearLayout>

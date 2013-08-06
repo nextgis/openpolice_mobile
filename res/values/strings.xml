@@ -19,7 +19,8 @@
 	<string name="stDnldDecription">Downloading policeman database</string> 
 	<string name="stZipExtractionProcess">Please Wait&#8230; Extracting zip file&#8230;</string>
 	
-	<string name="strSearchPolicemanBtn">Search policeman</string>    
+	<string name="strSearchPolicemanBtn">Search policeman</string>
+	<string name="strDemoBtn">Demo</string>    
 	<string name="strDownloadDBPolicemanBtn">Update policeman DB</string>    
 	<string name="strDownloadDBPhotoBtn">Download policeman photo DB</string>
 	    

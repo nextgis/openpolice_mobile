@@ -20,6 +20,7 @@
 	<string name="stZipExtractionProcess">Подождите&#8230; Идет распаковка архива&#8230;</string>
 	
 	<string name="strSearchPolicemanBtn">Найти участкового инспектора</string>    
+	<string name="strDemoBtn">Демонстрация</string>
 	<string name="strDownloadDBPolicemanBtn">Обновить базу участковых</string>    
 	<string name="strDownloadDBPhotoBtn">Загрузить фото участковых</string>    
 	
